@@ -1,6 +1,7 @@
 package com.plcoding.cryptotracker
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.*
+import com.plcoding.cryptotracker.core.presentation.utils.ObserveAsEvent
+import com.plcoding.cryptotracker.core.presentation.utils.toString
+import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListEvents
 import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListScreen
 import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListViewModel
 import com.plcoding.cryptotracker.ui.theme.CryptoTrackerTheme
@@ -26,6 +30,15 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel = koinViewModel<CoinListViewModel>()
                     val state = viewModel.state.collectAsStateWithLifecycle()
+                    ObserveAsEvent(viewModel.event) {events ->
+                        when(events){
+                            is CoinListEvents.Erorr -> {
+                                Toast.makeText(applicationContext, events.message.toString(
+                                    applicationContext
+                                ), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                     CoinListScreen(
                         state = state.value,
                         modifier = Modifier.padding(innerPadding)

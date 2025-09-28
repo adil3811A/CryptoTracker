@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CryptoTracker</string>
+    <string name="reqest_timeout">YOu request is time out it take so much time\n</string>
+    <string name="too_many_requst">in server currenly we have too many requstes</string>
+    <string name="no_internet">Currently user have no internet\n</string>
+    <string name="server_error">error happent in server side\n</string>
+    <string name="serialization">unexpecter data format\n</string>
+    <string name="unknown">Unknow error happent</string>
 </resources>
