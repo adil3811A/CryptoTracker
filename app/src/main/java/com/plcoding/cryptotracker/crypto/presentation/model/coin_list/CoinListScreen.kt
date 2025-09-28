@@ -40,28 +40,11 @@ fun CoinListScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(state.coins){coin->
-                CoinListItem(coin.toCoinUi() ,{
+                CoinListItem(coin ,{
                 },)
                 HorizontalDivider()
             }
 
         }
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun CoinLsitScreen() {
-    CryptoTrackerTheme {
-        CoinListScreen(
-            modifier = Modifier.background(
-                MaterialTheme.colorScheme.background
-            ),
-            state = CoinListState(
-                coins = (1..100).map{
-                    previreCoin.copy(id = it.toString())
-                }
-            )
-        )
     }
 }

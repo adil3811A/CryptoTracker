@@ -2,7 +2,7 @@ package com.plcoding.cryptotracker.crypto.presentation.model
 
 import androidx.annotation.DrawableRes
 import com.plcoding.cryptotracker.crypto.domain.Coin
-import com.plcoding.cryptotracker.util.getDrawableIdForCoin
+import com.plcoding.cryptotracker.core.presentation.utils.getDrawableIdForCoin
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -28,7 +28,7 @@ fun Coin.toCoinUi(): CoinUi{
         rank = rank,
         name = name,
         symbol = symbol,
-        marketCapUSD = marketCap.toDsiplyableNumber(),
+        marketCapUSD = marketCapUSD.toDsiplyableNumber(),
         priceUsd = priceUSD.toDsiplyableNumber(),
         changePercent24Hr = changePercent24Hr.toDsiplyableNumber(),
         iconREs = getDrawableIdForCoin(symbol)

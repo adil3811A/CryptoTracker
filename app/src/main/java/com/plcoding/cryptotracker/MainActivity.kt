@@ -11,7 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.*
+import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListScreen
+import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListViewModel
 import com.plcoding.cryptotracker.ui.theme.CryptoTrackerTheme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,8 +24,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             CryptoTrackerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = BuildConfig.API_KEY,
+                    val viewModel = koinViewModel<CoinListViewModel>()
+                    val state = viewModel.state.collectAsStateWithLifecycle()
+                    CoinListScreen(
+                        state = state.value,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

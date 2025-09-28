@@ -40,10 +40,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String",name = "API_KEY", value = localProperties.getProperty("API_KEY"))
+            buildConfigField(type = "String", name = "BASE_URL", value = localProperties.getProperty("BASE_URL"))
         }
+
         debug {
             buildConfigField("String",name = "API_KEY", value = localProperties.getProperty("API_KEY"))
+            buildConfigField(type = "String", name = "BASE_URL", value = localProperties.getProperty("BASE_URL"))
         }
+
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
