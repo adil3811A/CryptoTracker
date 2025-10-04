@@ -8,5 +8,5 @@ import com.plcoding.cryptotracker.crypto.presentation.model.CoinUi
 data class CoinListState(
     val IsLoading: Boolean = false,
     val coins: List<CoinUi> = emptyList(),
-    val selectedCoin: Coin? = null
+    val selectedCoin: CoinUi? = null
 )

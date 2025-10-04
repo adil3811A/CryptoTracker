@@ -6,4 +6,7 @@
     <string name="server_error">error happent in server side\n</string>
     <string name="serialization">unexpecter data format\n</string>
     <string name="unknown">Unknow error happent</string>
+    <string name="market_cap">Maket cap</string>
+    <string name="price">Price</string>
+    <string name="change_last_24_hr">Change last 24 houre</string>
 </resources>

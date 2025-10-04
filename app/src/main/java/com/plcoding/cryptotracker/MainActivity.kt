@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.*
 import com.plcoding.cryptotracker.core.presentation.utils.ObserveAsEvent
 import com.plcoding.cryptotracker.core.presentation.utils.toString
+import com.plcoding.cryptotracker.crypto.presentation.model.coin_detail.CoinDetailScreen
 import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListEvents
 import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListScreen
 import com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListViewModel
@@ -39,10 +40,14 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    CoinListScreen(
-                        state = state.value,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    when{
+                        state.value.selectedCoin!=null-> CoinDetailScreen(state.value, Modifier.padding(innerPadding))
+                        else->CoinListScreen(
+                            state = state.value,
+                            onClick = viewModel::onAction,
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }

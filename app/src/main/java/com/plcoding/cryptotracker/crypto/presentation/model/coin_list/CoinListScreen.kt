@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun CoinListScreen(
     state: CoinListState,
+    onClick:(CoinListAction)-> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -43,6 +44,7 @@ fun CoinListScreen(
         ) {
             items(state.coins){coin->
                 CoinListItem(coin ,{
+                    onClick(CoinListAction.OnCoinClick(coin))
                 },)
                 HorizontalDivider()
             }

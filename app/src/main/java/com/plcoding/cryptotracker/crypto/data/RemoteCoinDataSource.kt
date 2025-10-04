@@ -8,9 +8,11 @@ import com.plcoding.cryptotracker.core.domain.utils.map
 import com.plcoding.cryptotracker.crypto.data.dto.CoinResponseDto
 import com.plcoding.cryptotracker.crypto.data.mapper.toCoin
 import com.plcoding.cryptotracker.crypto.domain.Coin
+import com.plcoding.cryptotracker.crypto.domain.CoinPrice
 import com.plcoding.cryptotracker.crypto.domain.DataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import java.time.ZonedDateTime
 
 class RemoteCoinDataSource(
     private val httpClient: HttpClient
@@ -21,5 +23,13 @@ class RemoteCoinDataSource(
                 urlString = constructUrl("/assets")
             )
         }.map { responseDto -> responseDto.data.map { e->e.toCoin() } }
+    }
+
+    override suspend fun getCoinHistory(
+        coinID: String,
+        start: ZonedDateTime,
+        end: ZonedDateTime
+    ): Result<List<CoinPrice>, NetworkError> {
+
     }
 }
