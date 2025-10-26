@@ -42,6 +42,34 @@ class CoinListViewModel(
         }
     }
 
+    // New public helper to select a coin by its id. It will try to find the coin in current state,
+    // otherwise it will load the coin list and then select it if found.
+    fun selectCoinById(coinId: String){
+        val current = _state.value
+        val found = current.coins.find { it.id == coinId }
+        if(found!=null){
+            selectCoin(found)
+            return
+        }
+        // Not found - attempt to load coins then select
+        viewModelScope.launch {
+            _state.update { it.copy(IsLoading = true) }
+            dataSource.getCoin()
+                .onSuccess { data->
+                    val uiList = data.map { coin -> coin.toCoinUi() }
+                    _state.update { it.copy(IsLoading = false, coins = uiList) }
+                    val f = uiList.find { it.id == coinId }
+                    if(f!=null){
+                        selectCoin(f)
+                    }
+                }
+                .onError { error ->
+                    _state.update { it.copy(IsLoading = false) }
+                    _event.send(CoinListEvents.Erorr(error))
+                }
+        }
+    }
+
     private fun selectCoin(coinUi: CoinUi){
         _state.update {
             it.copy(selectedCoin = coinUi)

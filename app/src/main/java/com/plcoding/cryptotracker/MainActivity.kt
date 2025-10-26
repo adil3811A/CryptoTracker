@@ -12,7 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.plcoding.cryptotracker.core.presentation.utils.ObserveAsEvent
 import com.plcoding.cryptotracker.core.presentation.utils.toString
 import com.plcoding.cryptotracker.crypto.presentation.model.coin_detail.CoinDetailScreen
@@ -31,6 +36,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel = koinViewModel<CoinListViewModel>()
                     val state = viewModel.state.collectAsStateWithLifecycle()
+
                     ObserveAsEvent(viewModel.event) {events ->
                         when(events){
                             is CoinListEvents.Erorr -> {
@@ -40,18 +46,58 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    when{
-                        state.value.selectedCoin!=null-> CoinDetailScreen(state.value, Modifier.padding(innerPadding))
-                        else->CoinListScreen(
-                            state = state.value,
-                            onClick = viewModel::onAction,
-                            modifier = Modifier.padding(innerPadding)
-                        )
+
+                    // Navigation setup
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = Routes.CoinList.route,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable(Routes.CoinList.route) {
+                            CoinListScreen(
+                                state = state.value,
+                                onClick = { action ->
+                                    // Keep existing VM behavior
+                                    viewModel.onAction(action)
+                                    // If action is a coin click, navigate to details
+                                    when(action) {
+                                        is com.plcoding.cryptotracker.crypto.presentation.model.coin_list.CoinListAction.OnCoinClick -> {
+                                            navController.navigate("${Routes.CoinDetail.route}/${action.coinUi.id}")
+                                        }
+                                    }
+                                },
+                                modifier = Modifier
+                            )
+                        }
+
+                        composable(
+                            route = "${Routes.CoinDetail.route}/{coinId}",
+                            arguments = listOf(navArgument("coinId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            // Ensure ViewModel has selected coin for this id
+                            val coinId = backStackEntry.arguments?.getString("coinId")
+                            if(coinId!=null){
+                                // ask viewModel to select coin if needed
+                                viewModel.selectCoinById(coinId)
+                            }
+                            // We rely on ViewModel state for the selected coin. If user navigated directly
+                            // without selecting from list, selectedCoin might be null. For now show the
+                            // detail screen based on state value (it will show loader / empty if null).
+                            CoinDetailScreen(state = state.value, modifier = Modifier)
+                        }
                     }
                 }
             }
         }
     }
+}
+
+// Simple navigation routes
+private sealed class Routes(val route: String) {
+    object CoinList : Routes("coin_list")
+    object CoinDetail : Routes("coin_detail")
 }
 
 @Composable
